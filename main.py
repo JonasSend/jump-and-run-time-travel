@@ -12,6 +12,7 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 
+
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
@@ -64,6 +65,7 @@ class Block(pygame.sprite.Sprite):
         self.surf.fill(WHITE)
         self.rect = self.surf.get_rect(topleft=(x, y))
 
+
 # Level class
 class Level:
     def __init__(self):
@@ -81,7 +83,8 @@ class Level:
             (0, 0, 32, SCREEN_HEIGHT),
             # Right wall
             (SCREEN_WIDTH - 32, 0, 32, SCREEN_HEIGHT),
-            (200, SCREEN_HEIGHT - 100, 100, 100),  # Floating platform
+            # Obstsacle
+            (400, SCREEN_HEIGHT - 250, 100, 300),
         ]
         for block in level_layout:
             self.blocks.add(Block(*block))
@@ -89,6 +92,7 @@ class Level:
     def draw(self, screen):
         for block in self.blocks:
             screen.blit(block.surf, block.rect)
+
 
 # Game setup
 player = Player()
@@ -108,7 +112,9 @@ while running:
             if event.key == pygame.K_RIGHT:
                 player.move(1)  # Move right
         elif event.type == pygame.KEYUP:
-            if event.key in (pygame.K_LEFT, pygame.K_RIGHT):
+            if (event.key == pygame.K_LEFT and player.velocity.x < 0) or (
+                event.key == pygame.K_RIGHT and player.velocity.x > 0
+            ):
                 player.move(0)  # Stop moving
 
     # Game logic
