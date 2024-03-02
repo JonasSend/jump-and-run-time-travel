@@ -12,6 +12,7 @@ pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 timer_font = pygame.font.Font(None, 36)
 font_level_complete = pygame.font.Font(None, 72)
+pygame.display.set_caption("TIME JUMPER")
 
 # Game setup
 
@@ -68,7 +69,7 @@ while running:
         if pp.visible:
             collision_objects.add(pp)
     player.update(collision_objects)
-    
+
     if player.rect.colliderect(level.goal.rect):
         level.complete = True
 
@@ -89,7 +90,7 @@ while running:
 
 
     # Display the message if level is complete
-    if level.complete:        
+    if level.complete:
         # Render the text to a surface
         text_surface = font_level_complete.render('Level Complete!', True, WHITE)  # White text
         # Position the text in the center of the screen
