@@ -15,6 +15,7 @@ ORANGE =(255, 140, 0)
 PEACH =(255, 193, 111)
 
 
+
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
@@ -111,6 +112,7 @@ class VirtualPlayer(pygame.sprite.Sprite):
 
 
 
+
 # Game setup
 
 player = Player()
@@ -155,7 +157,8 @@ while running:
 
     # Game logic
     collision_objects = level.blocks.copy()
-    collision_objects.add(virtual_player)
+    if replay:
+        collision_objects.add(virtual_player)
     player.update(collision_objects)
 
     # Drawing
