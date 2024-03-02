@@ -141,6 +141,7 @@ while running:
             if event.key == pygame.K_LALT and not replay:  # Press 'R' to start the replay
                 replay = True
                 virtual_player.position_index = 0  # Reset replay
+                player.rect.topleft = movement_record[0]
             if event.key == pygame.K_q:
                 player = Player()
                 movement_record = []
