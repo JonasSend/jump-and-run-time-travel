@@ -154,7 +154,9 @@ while running:
                 player.move(0)  # Stop moving
 
     # Game logic
-    player.update(level.blocks)
+    collision_objects = level.blocks.copy()
+    collision_objects.add(virtual_player)
+    player.update(collision_objects)
 
     # Drawing
     screen.fill(BLACK)
