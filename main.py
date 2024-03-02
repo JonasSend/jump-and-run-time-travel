@@ -11,13 +11,15 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 # Colors
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
+ORANGE =(255, 140, 0)
+PEACH =(255, 193, 111)
 
 
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         self.surf = pygame.Surface((50, 50))
-        self.surf.fill(WHITE)
+        self.surf.fill(ORANGE)
         self.rect = self.surf.get_rect(center=(100, SCREEN_HEIGHT - 100))
         self.velocity = pygame.math.Vector2((0, 0))
         self.on_ground = False
@@ -92,15 +94,40 @@ class Level:
     def draw(self, screen):
         for block in self.blocks:
             screen.blit(block.surf, block.rect)
+            
+            
+class VirtualPlayer(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+        self.surf = pygame.Surface((50, 50))
+        self.surf.fill(PEACH)  # Different color to distinguish
+        self.rect = self.surf.get_rect()
+        self.position_index = 0  # To track the current position in the recording
+
+    def update(self, recorded_positions):
+        if self.position_index < len(recorded_positions):
+            self.rect.topleft = recorded_positions[self.position_index]
+            self.position_index += 1
+
 
 
 # Game setup
+
 player = Player()
 level = Level()
+movement_record = []
+virtual_player = VirtualPlayer()
+replay = False  # Flag to control replay
 
 # Main game loop
 running = True
 while running:
+    if not replay:
+        movement_record.append(player.rect.topleft)
+    else:
+        virtual_player.update(movement_record)
+        if virtual_player.position_index >= len(movement_record):
+            replay = False  # Stop replay when done
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -111,6 +138,14 @@ while running:
                 player.move(-1)  # Move left
             if event.key == pygame.K_RIGHT:
                 player.move(1)  # Move right
+            if event.key == pygame.K_LALT and not replay:  # Press 'R' to start the replay
+                replay = True
+                virtual_player.position_index = 0  # Reset replay
+            if event.key == pygame.K_q:
+                player = Player()
+                movement_record = []
+                virtual_player = VirtualPlayer()
+                replay = False  # Flag to control replay
         elif event.type == pygame.KEYUP:
             if (event.key == pygame.K_LEFT and player.velocity.x < 0) or (
                 event.key == pygame.K_RIGHT and player.velocity.x > 0
@@ -124,6 +159,9 @@ while running:
     screen.fill(BLACK)
     level.draw(screen)
     screen.blit(player.surf, player.rect)
+    
+    if replay:
+        screen.blit(virtual_player.surf, virtual_player.rect)  # Draw virtual player during replay
 
     pygame.display.flip()
     pygame.time.Clock().tick(60)
