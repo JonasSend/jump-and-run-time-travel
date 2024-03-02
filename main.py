@@ -13,22 +13,24 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 timer_font = pygame.font.Font(None, 36)
 
 # Game setup
-player = Player()
+
 level = Level()
-replay = False  # Flag to control replay
-start_ticks = pygame.time.get_ticks()
-past_players = [PastPlayer()]
+
+def init_game():
+    start_ticks = pygame.time.get_ticks()
+    past_players = []
+    recording = PastPlayer()
+    player = Player()
+    return start_ticks,past_players,recording, player
+
+start_ticks, past_players, recording, player = init_game()
 
 # Main game loop
 running = True
 while running:
-    if not replay:
-        past_players[-1].record(player.rect.topleft)
-    else:
-        for pp in past_players:
-            pp[-1].play()
-        if virtual_player.position_index >= len(movement_record):
-            replay = False  # Stop replay when done
+    recording.record(player.rect.topleft)
+    for pp in past_players:
+        pp.play()
 
     # Calculate elapsed time
     elapsed_ticks = pygame.time.get_ticks() - start_ticks
@@ -44,17 +46,15 @@ while running:
                 player.move(-1)  # Move left
             if event.key == pygame.K_RIGHT:
                 player.move(1)  # Move right
-            if event.key == pygame.K_LALT and not replay:  # Press 'R' to start the replay
-                replay = True
-                virtual_player.position_index = 0  # Reset replay
-                player.rect.topleft = movement_record[0]
+            if event.key == pygame.K_LALT:  # Press 'R' to start the replay
                 start_ticks = pygame.time.get_ticks()  # reset timer
-                player.rect.topleft = past_players[-1].movement_record[0]
-                past_players.append = PastPlayer()
+                player.rect.topleft = recording.movement_record[0]
+                past_players.append(recording)
+                recording = PastPlayer()
+                for pp in past_players:
+                    pp.reset()
             if event.key == pygame.K_q:
-                player = Player()
-                virtual_player = PastPlayer()
-                replay = False  # Flag to control replay
+                start_ticks, past_players, recording, player = init_game()
         elif event.type == pygame.KEYUP:
             if (event.key == pygame.K_LEFT and player.velocity.x < 0) or (
                 event.key == pygame.K_RIGHT and player.velocity.x > 0
@@ -63,8 +63,8 @@ while running:
 
     # Game logic
     collision_objects = level.blocks.copy()
-    if replay:
-        collision_objects.add(virtual_player)
+    for pp in past_players:
+        collision_objects.add(pp)
     player.update(collision_objects)
 
     # Format and render the time
@@ -78,8 +78,8 @@ while running:
     screen.blit(text_surface, text_rect)
     screen.blit(player.surf, player.rect)
     
-    if replay:
-        screen.blit(virtual_player.surf, virtual_player.rect)  # Draw virtual player during replay
+    for pp in past_players:
+        screen.blit(pp.surf, pp.rect)  # Draw virtual player during replay
 
     pygame.display.flip()
     pygame.time.Clock().tick(60)

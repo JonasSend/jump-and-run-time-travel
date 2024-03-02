@@ -16,7 +16,9 @@ class PastPlayer(pygame.sprite.Sprite):
         if self.position_index < len(self.movement_record):
             self.rect.topleft = self.movement_record[self.position_index]
             self.position_index += 1
-        if self.position_index < len(self.movement_record):
+            
+    def reset(self):
+        self.position_index = 0
             
             
     def record(self, topleft_position):
