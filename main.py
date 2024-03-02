@@ -23,19 +23,10 @@ class Player(pygame.sprite.Sprite):
         self.speed = 5  # Horizontal movement speed
 
     def update(self, blocks):
-        self.velocity.y += 1  # Gravity
-        self.rect.move_ip(self.velocity.x, self.velocity.y)
+        self.velocity.y += 1  # Apply gravity
+        self.rect.y += self.velocity.y  # Apply vertical movement
 
-        # Horizontal movement
-        self.rect.x += self.velocity.x
-
-        # Prevent going out of bounds
-        if self.rect.left < 0:
-            self.rect.left = 0
-        elif self.rect.right > SCREEN_WIDTH:
-            self.rect.right = SCREEN_WIDTH
-
-        # Collision detection for vertical movement
+        # Vertical collision detection
         self.on_ground = False
         for block in blocks:
             if self.rect.colliderect(block.rect):
@@ -46,6 +37,16 @@ class Player(pygame.sprite.Sprite):
                 elif self.velocity.y < 0:  # Jumping and hit the ceiling
                     self.velocity.y = 0
                     self.rect.top = block.rect.bottom
+
+        # Horizontal movement
+        self.rect.x += self.velocity.x
+        # Horizontal collision detection
+        for block in blocks:
+            if self.rect.colliderect(block.rect):
+                if self.velocity.x > 0:  # Moving right
+                    self.rect.right = block.rect.left
+                elif self.velocity.x < 0:  # Moving left
+                    self.rect.left = block.rect.right
 
     def jump(self):
         if self.on_ground:
@@ -72,8 +73,15 @@ class Level:
     def load_level(self):
         # Example level layout
         level_layout = [
-            (0, SCREEN_HEIGHT - 32, SCREEN_WIDTH, 32),  # Ground
-            (200, SCREEN_HEIGHT - 100, 100, 32),  # Floating platform
+            # Ground
+            (0, SCREEN_HEIGHT - 32, SCREEN_WIDTH, 32),
+            # Ceiling
+            (0, 0, SCREEN_WIDTH, 32),
+            # Left wall
+            (0, 0, 32, SCREEN_HEIGHT),
+            # Right wall
+            (SCREEN_WIDTH - 32, 0, 32, SCREEN_HEIGHT),
+            (200, SCREEN_HEIGHT - 100, 100, 100),  # Floating platform
         ]
         for block in level_layout:
             self.blocks.add(Block(*block))
