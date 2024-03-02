@@ -15,18 +15,18 @@ timer_font = pygame.font.Font(None, 36)
 # Game setup
 player = Player()
 level = Level()
-movement_record = []
-virtual_player = PastPlayer()
 replay = False  # Flag to control replay
 start_ticks = pygame.time.get_ticks()
+past_players = [PastPlayer()]
 
 # Main game loop
 running = True
 while running:
     if not replay:
-        movement_record.append(player.rect.topleft)
+        past_players[-1].record(player.rect.topleft)
     else:
-        virtual_player.update(movement_record)
+        for pp in past_players:
+            pp[-1].play()
         if virtual_player.position_index >= len(movement_record):
             replay = False  # Stop replay when done
 
@@ -49,9 +49,10 @@ while running:
                 virtual_player.position_index = 0  # Reset replay
                 player.rect.topleft = movement_record[0]
                 start_ticks = pygame.time.get_ticks()  # reset timer
+                player.rect.topleft = past_players[-1].movement_record[0]
+                past_players.append = PastPlayer()
             if event.key == pygame.K_q:
                 player = Player()
-                movement_record = []
                 virtual_player = PastPlayer()
                 replay = False  # Flag to control replay
         elif event.type == pygame.KEYUP:

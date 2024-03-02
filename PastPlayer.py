@@ -10,8 +10,15 @@ class PastPlayer(pygame.sprite.Sprite):
         self.surf.fill(PEACH)  # Different color to distinguish
         self.rect = self.surf.get_rect()
         self.position_index = 0  # To track the current position in the recording
+        self.movement_record = []
 
-    def update(self, recorded_positions):
-        if self.position_index < len(recorded_positions):
-            self.rect.topleft = recorded_positions[self.position_index]
+    def play(self):
+        if self.position_index < len(self.movement_record):
+            self.rect.topleft = self.movement_record[self.position_index]
             self.position_index += 1
+        if self.position_index < len(self.movement_record):
+            
+            
+    def record(self, topleft_position):
+        self.movement_record.append(topleft_position)
+            
