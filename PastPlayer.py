@@ -11,11 +11,15 @@ class PastPlayer(pygame.sprite.Sprite):
         self.rect = self.surf.get_rect()
         self.position_index = 0  # To track the current position in the recording
         self.movement_record = []
+        self.visible = True
 
     def play(self):
         if self.position_index < len(self.movement_record):
             self.rect.topleft = self.movement_record[self.position_index]
             self.position_index += 1
+            self.visible = True
+        else:
+            self.visible = False
             
     def reset(self):
         self.position_index = 0

@@ -64,7 +64,8 @@ while running:
     # Game logic
     collision_objects = level.blocks.copy()
     for pp in past_players:
-        collision_objects.add(pp)
+        if pp.visible:
+            collision_objects.add(pp)
     player.update(collision_objects)
 
     # Format and render the time
@@ -79,7 +80,8 @@ while running:
     screen.blit(player.surf, player.rect)
     
     for pp in past_players:
-        screen.blit(pp.surf, pp.rect)  # Draw virtual player during replay
+        if pp.visible:
+            screen.blit(pp.surf, pp.rect)  # Draw virtual player during replay
 
     pygame.display.flip()
     pygame.time.Clock().tick(60)
