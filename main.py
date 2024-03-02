@@ -19,7 +19,7 @@ timer_font = pygame.font.Font(None, 36)
 font_level_complete = pygame.font.Font(None, 72)
 pygame.display.set_caption("TIME JUMPER")
 
-level = Level()
+level = Level("level.png")
 
 
 def init_game():

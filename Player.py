@@ -11,10 +11,10 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.surf.get_rect(center=(100, WINDOW_HEIGHT - 100))
         self.velocity = pygame.math.Vector2((0, 0))
         self.on_ground = False
-        self.speed = 5  # Horizontal movement speed
+        self.speed = 10  # Horizontal movement speed
 
     def update(self, blocks):
-        self.velocity.y += 1  # Apply gravity
+        self.velocity.y += 3  # Apply gravity
         self.rect.y += self.velocity.y  # Apply vertical movement
 
         # Vertical collision detection
@@ -41,7 +41,7 @@ class Player(pygame.sprite.Sprite):
 
     def jump(self):
         if self.on_ground:
-            self.velocity.y = -20  # Jump velocity
+            self.velocity.y = -30  # Jump velocity
 
     def move(self, x_direction):
         self.velocity.x = x_direction * self.speed
