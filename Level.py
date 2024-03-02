@@ -2,12 +2,14 @@ import pygame
 
 from Block import Block
 from Constants import SCREEN_WIDTH, SCREEN_HEIGHT
+from Goal import Goal
 
 
 class Level:
     def __init__(self):
         self.blocks = pygame.sprite.Group()
         self.load_level()
+        self.complete = False
 
     def load_level(self):
         # Example level layout
@@ -23,9 +25,13 @@ class Level:
             # Obstsacle
             (400, SCREEN_HEIGHT - 250, 100, 300),
         ]
+        
         for block in level_layout:
             self.blocks.add(Block(*block))
+            
+        self.goal = Goal(600, SCREEN_HEIGHT - 64, 32, 32)
 
     def draw(self, screen):
         for block in self.blocks:
             screen.blit(block.surf, block.rect)
+        screen.blit(self.goal.surf, self.goal.rect)

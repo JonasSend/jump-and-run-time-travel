@@ -11,6 +11,7 @@ from util.timer import format_time
 pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 timer_font = pygame.font.Font(None, 36)
+font_level_complete = pygame.font.Font(None, 72)
 
 # Game setup
 
@@ -67,6 +68,9 @@ while running:
         if pp.visible:
             collision_objects.add(pp)
     player.update(collision_objects)
+    
+    if player.rect.colliderect(level.goal.rect):
+        level.complete = True
 
     # Format and render the time
     timer_text = format_time(elapsed_seconds)
@@ -83,6 +87,14 @@ while running:
         if pp.visible:
             screen.blit(pp.surf, pp.rect)  # Draw virtual player during replay
 
+
+    # Display the message if level is complete
+    if level.complete:        
+        # Render the text to a surface
+        text_surface = font_level_complete.render('Level Complete!', True, WHITE)  # White text
+        # Position the text in the center of the screen
+        text_rect = text_surface.get_rect(center=(SCREEN_WIDTH/2, SCREEN_HEIGHT/2))
+        screen.blit(text_surface, text_rect)
     pygame.display.flip()
     pygame.time.Clock().tick(60)
 
