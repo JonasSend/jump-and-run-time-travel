@@ -19,9 +19,9 @@ Idea: Left and right arrows to move with SPACE as jump button. [Press [TBD] to t
 TBD
 
 ## Agenda
-* Simple level with rectangles as player and obstacles
-* Physics (jumping)
-* Time travel
 * More functionality
+  * Timer
+  * Time travel more than once
+  * 
 * Make it look nice
 
