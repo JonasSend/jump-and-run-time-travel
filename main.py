@@ -18,12 +18,14 @@ pygame.display.set_caption("TIME JUMPER")
 
 level = Level()
 
+
 def init_game():
     start_ticks = pygame.time.get_ticks()
     past_players = []
     recording = PastPlayer()
     player = Player()
-    return start_ticks,past_players,recording, player
+    return start_ticks, past_players, recording, player
+
 
 start_ticks, past_players, recording, player = init_game()
 
@@ -55,11 +57,12 @@ while running:
                 recording = PastPlayer()
                 for pp in past_players:
                     pp.reset()
+                    pp.fade_colour()
             if event.key == pygame.K_q:
                 start_ticks, past_players, recording, player = init_game()
         elif event.type == pygame.KEYUP:
             if (event.key == pygame.K_LEFT and player.velocity.x < 0) or (
-                event.key == pygame.K_RIGHT and player.velocity.x > 0
+                    event.key == pygame.K_RIGHT and player.velocity.x > 0
             ):
                 player.move(0)  # Stop moving
 
@@ -83,7 +86,7 @@ while running:
     text_rect = text_surface.get_rect(topright=(SCREEN_WIDTH - 64, 64))
     screen.blit(text_surface, text_rect)
     screen.blit(player.surf, player.rect)
-    
+
     for pp in past_players:
         if pp.visible:
             screen.blit(pp.surf, pp.rect)  # Draw virtual player during replay
