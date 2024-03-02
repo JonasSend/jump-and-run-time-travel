@@ -91,13 +91,12 @@ while running:
         if pp.visible:
             screen.blit(pp.surf, pp.rect)  # Draw virtual player during replay
 
-
     # Display the message if level is complete
     if level.complete:
         # Render the text to a surface
         text_surface = font_level_complete.render('Level Complete!', True, WHITE)  # White text
         # Position the text in the center of the screen
-        text_rect = text_surface.get_rect(center=(SCREEN_WIDTH/2, SCREEN_HEIGHT/2))
+        text_rect = text_surface.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2))
         screen.blit(text_surface, text_rect)
     pygame.display.flip()
     pygame.time.Clock().tick(60)
