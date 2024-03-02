@@ -1,6 +1,6 @@
 import pygame
 
-from Constants import SCREEN_HEIGHT, ORANGE
+from Constants import WINDOW_HEIGHT, ORANGE
 
 
 class Player(pygame.sprite.Sprite):
@@ -8,7 +8,7 @@ class Player(pygame.sprite.Sprite):
         super().__init__()
         self.surf = pygame.Surface((50, 50))
         self.surf.fill(ORANGE)
-        self.rect = self.surf.get_rect(center=(100, SCREEN_HEIGHT - 100))
+        self.rect = self.surf.get_rect(center=(100, WINDOW_HEIGHT - 100))
         self.velocity = pygame.math.Vector2((0, 0))
         self.on_ground = False
         self.speed = 5  # Horizontal movement speed

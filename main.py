@@ -2,19 +2,22 @@ import pygame
 import sys
 
 # Initialize Pygame
-from Constants import BLACK, SCREEN_WIDTH, SCREEN_HEIGHT, WHITE
+from Constants import BLACK, WHITE, WINDOW_WIDTH, WINDOW_HEIGHT
+from pygame.locals import RESIZABLE, DOUBLEBUF, HWSURFACE
 from Level import Level
 from PastPlayer import PastPlayer
 from Player import Player
 from util.timer import format_time
 
+
 pygame.init()
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+WINDOW = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT), RESIZABLE | DOUBLEBUF | HWSURFACE)
+# Screen is a copy, where we draw our sprites on and later fit to the window
+SCREEN = WINDOW.copy()
+CLOCK = pygame.time.Clock()
 timer_font = pygame.font.Font(None, 36)
 font_level_complete = pygame.font.Font(None, 72)
 pygame.display.set_caption("TIME JUMPER")
-
-# Game setup
 
 level = Level()
 
@@ -81,23 +84,25 @@ while running:
     text_surface = timer_font.render(timer_text, True, WHITE)
 
     # Drawing
-    screen.fill(BLACK)
-    level.draw(screen)
-    text_rect = text_surface.get_rect(topright=(SCREEN_WIDTH - 64, 64))
-    screen.blit(text_surface, text_rect)
-    screen.blit(player.surf, player.rect)
+    SCREEN.fill(BLACK)
+    level.draw(SCREEN)
+    text_rect = text_surface.get_rect(topright=(WINDOW_WIDTH - 64, 64))
+    SCREEN.blit(text_surface, text_rect)
+    SCREEN.blit(player.surf, player.rect)
 
     for pp in past_players:
         if pp.visible:
-            screen.blit(pp.surf, pp.rect)  # Draw virtual player during replay
+            SCREEN.blit(pp.surf, pp.rect)  # Draw virtual player during replay
 
     # Display the message if level is complete
     if level.complete:
         # Render the text to a surface
         text_surface = font_level_complete.render('Level Complete!', True, WHITE)  # White text
-        # Position the text in the center of the screen
-        text_rect = text_surface.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2))
-        screen.blit(text_surface, text_rect)
+        # Position the text in the center of the SCREEN
+        text_rect = text_surface.get_rect(center=(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2))
+        SCREEN.blit(text_surface, text_rect)
+
+    WINDOW.blit(pygame.transform.scale(SCREEN, WINDOW.get_rect().size), (0, 0))
     pygame.display.flip()
     pygame.time.Clock().tick(60)
 
